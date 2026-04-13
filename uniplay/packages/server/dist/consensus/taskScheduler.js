@@ -1,57 +1,84 @@
-import { MicrotaskType } from '@uniplay/core';
 export class TaskScheduler {
-    clients = new Map();
-    tasks = new Map();
-    taskCounter = 0;
-    /**
-     * Assign up to 2 microtasks per client, ensuring they don't overload (1-2ms each)
-     */
-    assignTasks(clients, zoneId, entityId, input, state) {
-        const assignedTasks = [];
-        const now = Date.now();
-        for (const clientId of clients) {
-            const clientInfo = this.clients.get(clientId) || { tasks: [], lastAssigned: 0 };
-            if (clientInfo.tasks.length >= 2)
-                continue; // Max 2 tasks per client
-            // Create a microtask, e.g., physics update
-            const taskId = `task_${this.taskCounter++}`;
-            const task = {
-                id: taskId,
-                type: MicrotaskType.PHYSICS_UPDATE,
-                data: { entityId, zoneId, input, state },
-                assignedClients: [clientId], // For simplicity, assign to one, but can be multiple for consensus
-                deadline: now + 10, // 10ms deadline
-                maxExecutionTime: 2,
-            };
-            this.tasks.set(taskId, task);
-            clientInfo.tasks.push(taskId);
-            clientInfo.lastAssigned = now;
-            this.clients.set(clientId, clientInfo);
-            assignedTasks.push(task);
-            if (assignedTasks.length >= 2)
-                break; // Limit assignments
-        }
-        return assignedTasks;
+    activeTasks = new Map();
+    assignedClients = new Map();
+    // Maps a client to the tasks they are currently processing (for Load Balancing)
+    clientLoad = new Map();
+    // Metrics for Step 8: Node-Scoring
+    clientScore = new Map();
+    constructor() { }
+    // Generates a new task
+    createMicrotask(type, targetId, data, currentTick) {
+        const id = this.generateId();
+        const task = {
+            id,
+            type,
+            targetId,
+            tick: currentTick,
+            data
+        };
+        this.activeTasks.set(id, task);
+        this.assignedClients.set(id, new Set());
+        return task;
     }
-    /**
-     * Remove completed tasks from client
-     */
-    completeTask(clientId, taskId) {
-        const clientInfo = this.clients.get(clientId);
-        if (clientInfo) {
-            clientInfo.tasks = clientInfo.tasks.filter(id => id !== taskId);
-            this.clients.set(clientId, clientInfo);
+    // Step 3: Microtask-Verteilung (Load Balancing & Redundancy)
+    assignTask(task, availableClients, redundancy = 3) {
+        // Basic Load Balancing: Find clients with fewest active tasks and highest trust score
+        const sortedClients = [...availableClients].sort((a, b) => {
+            // 1. Check trust score (higher score = worse penalization)
+            const scoreA = this.clientScore.get(a) || 0;
+            const scoreB = this.clientScore.get(b) || 0;
+            if (scoreA !== scoreB)
+                return scoreA - scoreB;
+            // 2. Check load
+            const loadA = this.clientLoad.get(a)?.size || 0;
+            const loadB = this.clientLoad.get(b)?.size || 0;
+            return loadA - loadB;
+        });
+        // Select the top 'redundancy' clients
+        const selected = sortedClients.slice(0, redundancy);
+        for (const clientId of selected) {
+            this.assignedClients.get(task.id)?.add(clientId);
+            if (!this.clientLoad.has(clientId)) {
+                this.clientLoad.set(clientId, new Set());
+            }
+            this.clientLoad.get(clientId)?.add(task.id);
         }
-        this.tasks.delete(taskId);
+        return selected;
     }
-    /**
-     * Get tasks for a client
-     */
-    getTasksForClient(clientId) {
-        const clientInfo = this.clients.get(clientId);
-        if (!clientInfo)
-            return [];
-        return clientInfo.tasks.map(id => this.tasks.get(id)).filter(Boolean);
+    // Step 3: Microtask-Abbruch & Neuvergabe
+    resolveTask(taskId) {
+        this.activeTasks.delete(taskId);
+        const clients = this.assignedClients.get(taskId);
+        if (clients) {
+            for (const clientId of clients) {
+                this.clientLoad.get(clientId)?.delete(taskId);
+            }
+        }
+        this.assignedClients.delete(taskId);
+    }
+    // Step 8: Node-Misbehavior-Scoring
+    penalizeClient(clientId, strikePoints) {
+        const current = this.clientScore.get(clientId) || 0;
+        const newScore = current + strikePoints;
+        this.clientScore.set(clientId, newScore);
+        if (newScore > 50) {
+            console.warn(`[TaskScheduler] Deprioritizing Client ${clientId} due to high cheat score (${newScore})`);
+            // Step 8: automatische Depriorisierung & Task-Entzug
+            this.revokeAllTasks(clientId);
+        }
+    }
+    revokeAllTasks(clientId) {
+        const tasks = this.clientLoad.get(clientId);
+        if (tasks) {
+            for (const taskId of tasks) {
+                this.assignedClients.get(taskId)?.delete(clientId);
+                // We might want to reassign this task to someone else if quorum drops
+            }
+            tasks.clear();
+        }
+    }
+    generateId() {
+        return Math.random().toString(36).substring(2, 10);
     }
 }
-//# sourceMappingURL=taskScheduler.js.map
+//# sourceMappingURL=TaskScheduler.js.map

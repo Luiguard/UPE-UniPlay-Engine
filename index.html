@@ -1079,15 +1079,15 @@ uniplay dev</code></pre>
           </div>
           <div class="tool-content">
             <div class="sdk-downloads">
-              <a href="#" class="sdk-download" data-sdk="npm">
+              <a href="uniplay-sdk.zip" download="uniplay-sdk.zip" class="sdk-download" data-sdk="npm">
                 <div class="sdk-icon">📦</div>
                 <div class="sdk-info">
-                  <div class="sdk-name">NPM Package</div>
-                  <div class="sdk-desc">@uniplay/core @uniplay/server</div>
+                  <div class="sdk-name">Download Repository</div>
+                  <div class="sdk-desc">Includes @uniplay/core, server, client, proxy</div>
                 </div>
-                <div class="sdk-arrow">→</div>
+                <div class="sdk-arrow">↓</div>
               </a>
-              <a href="#" class="sdk-download" data-sdk="unity">
+              <a href="#" class="sdk-download" data-sdk="unity" onclick="alert('Unity Package is scheduled for Q3. To integrate now, use the C# WebSocket adapter pattern from the documentation.')">
                 <div class="sdk-icon">🎮</div>
                 <div class="sdk-info">
                   <div class="sdk-name">Unity Package</div>
@@ -1095,7 +1095,7 @@ uniplay dev</code></pre>
                 </div>
                 <div class="sdk-arrow">→</div>
               </a>
-              <a href="#" class="sdk-download" data-sdk="unreal">
+              <a href="#" class="sdk-download" data-sdk="unreal" onclick="alert('Unreal Engine Plugin is scheduled for Q4. Use the C++ MemoryHook Proxy in the meantime.')">
                 <div class="sdk-icon">🎯</div>
                 <div class="sdk-info">
                   <div class="sdk-name">Unreal Plugin</div>
@@ -1167,14 +1167,11 @@ uniplay dev</code></pre>
             <div class="demo-container">
               <iframe id="demoFrame" src="demo.html" width="100%" height="400" frameborder="0"></iframe>
             </div>
-            <div class="demo-controls">
-              <button class="demo-btn" id="demoReset">🔄 Reset</button>
-              <button class="demo-btn" id="demoPhysics">⚡ Toggle Physics</button>
-              <button class="demo-btn" id="demoConsensus">⚖️ Show Consensus</button>
+            <div class="demo-controls" style="display: none;">
+              <!-- Handled inside demo.html itself now -->
             </div>
             <div class="tool-links">
-              <a href="demo.html" class="tool-link" target="_blank">🎮 Full Demo</a>
-              <a href="https://github.com/uniplay/demo" class="tool-link" target="_blank">📄 Source Code</a>
+              <a href="demo.html" class="tool-link" target="_blank">🎮 Open Fullscreen Demo</a>
             </div>
           </div>
         </div>

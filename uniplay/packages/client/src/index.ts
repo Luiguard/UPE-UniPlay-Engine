@@ -1,61 +1,73 @@
-import { TaskExecutor } from './taskExecutor.js';
-import { WebSocketClient } from './transport/WebSocketClient.js';
-import { ClientConfig } from '@uniplay/core';
+import { ClientConfig, DEFAULT_CLIENT_CONFIG, EntityState, InputFrame } from '@uniplay/core';
+import { TickSync } from './TickSync.js';
+import { WSClientTransport } from './transport/WebSocketClientTransport.js';
+import { ClientPrediction } from './prediction/ClientPrediction.js';
+import { TaskExecutor } from './prediction/TaskExecutor.js';
+import { VisualSmoothing } from './visual/VisualSmoothing.js';
 
-const config: ClientConfig = {
-  serverUrl: 'ws://localhost:8080',
-  prediction: true,
-  reconciliation: 'smooth',
-  inputBufferSize: 18,
-  visualSmoothing: true,
-  lerpSpeed: 0.08,
-  jitterBufferSize: 3,
-  deadReckoning: true,
-};
+export * from './TickSync.js';
+export * from './transport/WebSocketClientTransport.js';
+export * from './prediction/ClientPrediction.js';
+export * from './prediction/TaskExecutor.js';
+export * from './visual/VisualSmoothing.js';
 
-class UniPlayClient {
-  private taskExecutor: TaskExecutor;
-  private wsClient: WebSocketClient;
-  private clientId: string;
+export class UniPlayClient {
+  public config: ClientConfig;
+  public clientId: string;
+  public tickSync: TickSync;
+  public transport: WSClientTransport;
+  public prediction: ClientPrediction;
+  public taskExecutor: TaskExecutor;
+  public visual: VisualSmoothing;
 
-  constructor(clientId: string) {
+  private connected: boolean = false;
+  private animationFrameId: number = 0;
+
+  constructor(clientId: string, config: Partial<ClientConfig> = {}) {
     this.clientId = clientId;
-    this.taskExecutor = new TaskExecutor(clientId);
-    this.wsClient = new WebSocketClient(config.serverUrl, clientId);
-    this.setupMessageHandlers();
+    this.config = { ...DEFAULT_CLIENT_CONFIG, ...config };
+    
+    this.tickSync = new TickSync(60, 2);
+    this.transport = new WSClientTransport();
+    this.prediction = new ClientPrediction();
+    this.taskExecutor = new TaskExecutor(this.clientId, this.transport, this.tickSync);
+    this.visual = new VisualSmoothing();
+
+    this.setupInternals();
   }
 
-  private setupMessageHandlers() {
-    // Placeholder: Höre auf MICROTASK_ASSIGN, führe aus, sende MICROTASK_RESULT
+  private setupInternals(): void {
+    this.transport.registerHandler(1 /* HEARTBEAT */, (payload: { serverTick: number, serverTime: number }) => {
+      this.transport.updatePing(Date.now() - payload.serverTime);
+      this.tickSync.onHeartbeat(payload.serverTick, payload.serverTime, this.transport.getPing());
+    });
+
+    this.transport.registerHandler(9 /* ASSIGN_TASK */, (payload: any) => {
+      this.taskExecutor.executeTask(payload.task);
+    });
   }
 
-  start() {
-    console.log(`Starting UniPlay Client ${this.clientId}...`);
-    // Simuliere Task-Empfang und -Ausführung
-    setTimeout(() => {
-      // Mock Task
-      const mockTask = {
-        id: 'task1',
-        type: 'physics_update' as any,
-        data: { entityId: 'entity1', state: { entityId: 'entity1', position: { x: 0, y: 0, z: 0 }, velocity: { x: 0, y: 0, z: 0 }, rotation: 0, flags: 0, objectState: 0 } },
-        assignedClients: [this.clientId],
-        deadline: Date.now() + 10,
-        maxExecutionTime: 2,
+  public async connect(): Promise<void> {
+    console.log(`[UniPlayClient] Connecting to ${this.config.serverUrl}...`);
+    await this.transport.connect(this.config.serverUrl);
+    this.connected = true;
+  }
+
+  public disconnect(): void {
+    this.connected = false;
+    this.transport.disconnect();
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+  }
+
+  public sendInput(input: Omit<InputFrame, 'tick' | 'timestamp'>): void {
+      if (!this.connected) return;
+      
+      const frame: InputFrame = {
+          ...input,
+          tick: this.tickSync.getCurrentTick(),
+          timestamp: Date.now()
       };
-      (async () => {
-        const results = await this.taskExecutor.executeTasks([mockTask]);
-        // Sende Ergebnisse zurück
-        this.wsClient.sendMessage({
-          type: 0x15, // MICROTASK_RESULT
-          tick: 1,
-          timestamp: Date.now(),
-          payload: { results },
-        });
-      })();
-    }, 1000);
+      
+      this.transport.sendPacket(0x10 /* INPUT */, { frames: [frame] });
   }
 }
-
-// Start Client
-const client = new UniPlayClient('client1');
-client.start();

@@ -1,55 +1,63 @@
-import { TaskExecutor } from './taskExecutor.js';
-import { WebSocketClient } from './transport/WebSocketClient.js';
-const config = {
-    serverUrl: 'ws://localhost:8080',
-    prediction: true,
-    reconciliation: 'smooth',
-    inputBufferSize: 18,
-    visualSmoothing: true,
-    lerpSpeed: 0.08,
-    jitterBufferSize: 3,
-    deadReckoning: true,
-};
-class UniPlayClient {
-    taskExecutor;
-    wsClient;
+import { DEFAULT_CLIENT_CONFIG } from '@uniplay/core';
+import { TickSync } from './TickSync.js';
+import { WSClientTransport } from './transport/WebSocketClientTransport.js';
+import { ClientPrediction } from './prediction/ClientPrediction.js';
+import { TaskExecutor } from './prediction/TaskExecutor.js';
+import { VisualSmoothing } from './visual/VisualSmoothing.js';
+export * from './TickSync.js';
+export * from './transport/WebSocketClientTransport.js';
+export * from './prediction/ClientPrediction.js';
+export * from './prediction/TaskExecutor.js';
+export * from './visual/VisualSmoothing.js';
+export class UniPlayClient {
+    config;
     clientId;
-    constructor(clientId) {
+    tickSync;
+    transport;
+    prediction;
+    taskExecutor;
+    visual;
+    connected = false;
+    animationFrameId = 0;
+    constructor(clientId, config = {}) {
         this.clientId = clientId;
-        this.taskExecutor = new TaskExecutor(clientId);
-        this.wsClient = new WebSocketClient(config.serverUrl, clientId);
-        this.setupMessageHandlers();
+        this.config = { ...DEFAULT_CLIENT_CONFIG, ...config };
+        this.tickSync = new TickSync(60, 2);
+        this.transport = new WSClientTransport();
+        this.prediction = new ClientPrediction();
+        this.taskExecutor = new TaskExecutor(this.clientId, this.transport, this.tickSync);
+        this.visual = new VisualSmoothing();
+        this.setupInternals();
     }
-    setupMessageHandlers() {
-        // Placeholder: Höre auf MICROTASK_ASSIGN, führe aus, sende MICROTASK_RESULT
+    setupInternals() {
+        this.transport.registerHandler(1 /* HEARTBEAT */, (payload) => {
+            this.transport.updatePing(Date.now() - payload.serverTime);
+            this.tickSync.onHeartbeat(payload.serverTick, payload.serverTime, this.transport.getPing());
+        });
+        this.transport.registerHandler(9 /* ASSIGN_TASK */, (payload) => {
+            this.taskExecutor.executeTask(payload.task);
+        });
     }
-    start() {
-        console.log(`Starting UniPlay Client ${this.clientId}...`);
-        // Simuliere Task-Empfang und -Ausführung
-        setTimeout(() => {
-            // Mock Task
-            const mockTask = {
-                id: 'task1',
-                type: 'physics_update',
-                data: { entityId: 'entity1', state: { entityId: 'entity1', position: { x: 0, y: 0, z: 0 }, velocity: { x: 0, y: 0, z: 0 }, rotation: 0, flags: 0, objectState: 0 } },
-                assignedClients: [this.clientId],
-                deadline: Date.now() + 10,
-                maxExecutionTime: 2,
-            };
-            (async () => {
-                const results = await this.taskExecutor.executeTasks([mockTask]);
-                // Sende Ergebnisse zurück
-                this.wsClient.sendMessage({
-                    type: 0x15, // MICROTASK_RESULT
-                    tick: 1,
-                    timestamp: Date.now(),
-                    payload: { results },
-                });
-            })();
-        }, 1000);
+    async connect() {
+        console.log(`[UniPlayClient] Connecting to ${this.config.serverUrl}...`);
+        await this.transport.connect(this.config.serverUrl);
+        this.connected = true;
+    }
+    disconnect() {
+        this.connected = false;
+        this.transport.disconnect();
+        if (this.animationFrameId)
+            cancelAnimationFrame(this.animationFrameId);
+    }
+    sendInput(input) {
+        if (!this.connected)
+            return;
+        const frame = {
+            ...input,
+            tick: this.tickSync.getCurrentTick(),
+            timestamp: Date.now()
+        };
+        this.transport.sendPacket(0x10 /* INPUT */, { frames: [frame] });
     }
 }
-// Start Client
-const client = new UniPlayClient('client1');
-client.start();
 //# sourceMappingURL=index.js.map

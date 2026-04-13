@@ -1,0 +1,20 @@
+{
+  "name": "@uniplay/proxy",
+  "version": "0.1.0",
+  "description": "UniPlay Engine – Proxy adapter for non-moddable games",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@uniplay/client": "workspace:*",
+    "@uniplay/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "typescript": "^5.5.0"
+  }
+}

@@ -21,12 +21,14 @@ export var ObjectState;
     ObjectState[ObjectState["INTERACTING"] = 2] = "INTERACTING";
     ObjectState[ObjectState["SPECTATING"] = 3] = "SPECTATING";
 })(ObjectState || (ObjectState = {}));
+// ─── Microtasks & Consensus ────────────────────────
 export var MicrotaskType;
 (function (MicrotaskType) {
-    MicrotaskType["PHYSICS_UPDATE"] = "physics_update";
-    MicrotaskType["AI_DECISION"] = "ai_decision";
-    MicrotaskType["COLLISION_CHECK"] = "collision_check";
-    // Add more as needed
+    MicrotaskType[MicrotaskType["PHYSICS_STEP"] = 0] = "PHYSICS_STEP";
+    MicrotaskType[MicrotaskType["NPC_AI"] = 1] = "NPC_AI";
+    MicrotaskType[MicrotaskType["COLLISION_CHECK"] = 2] = "COLLISION_CHECK";
+    MicrotaskType[MicrotaskType["ZONE_HASH"] = 3] = "ZONE_HASH";
+    MicrotaskType[MicrotaskType["PATHFINDING"] = 4] = "PATHFINDING";
 })(MicrotaskType || (MicrotaskType = {}));
 export var ConsensusOutcome;
 (function (ConsensusOutcome) {
@@ -47,14 +49,14 @@ export var MessageType;
     MessageType[MessageType["PLAYER_JOIN"] = 6] = "PLAYER_JOIN";
     MessageType[MessageType["PLAYER_LEAVE"] = 7] = "PLAYER_LEAVE";
     MessageType[MessageType["WELCOME"] = 8] = "WELCOME";
-    MessageType[MessageType["MICROTASK_ASSIGN"] = 9] = "MICROTASK_ASSIGN";
+    MessageType[MessageType["ASSIGN_TASK"] = 9] = "ASSIGN_TASK";
+    MessageType[MessageType["MIGRATE_EDGE"] = 10] = "MIGRATE_EDGE";
     // Client → Server
     MessageType[MessageType["INPUT"] = 16] = "INPUT";
     MessageType[MessageType["CONSENSUS_VOTE"] = 17] = "CONSENSUS_VOTE";
     MessageType[MessageType["STATE_HASH"] = 18] = "STATE_HASH";
     MessageType[MessageType["ZONE_ENTER_REQ"] = 19] = "ZONE_ENTER_REQ";
     MessageType[MessageType["ZONE_LEAVE_REQ"] = 20] = "ZONE_LEAVE_REQ";
-    MessageType[MessageType["MICROTASK_RESULT"] = 21] = "MICROTASK_RESULT";
     // Bidirectional
     MessageType[MessageType["PING"] = 32] = "PING";
     MessageType[MessageType["PONG"] = 33] = "PONG";
@@ -69,6 +71,7 @@ export const DEFAULT_SERVER_CONFIG = {
     consensusQuorum: 2,
     heartbeatInterval: 1000,
     stateHashInterval: 60,
+    interestRadius: 150.0 // Distance threshold
 };
 export const DEFAULT_CLIENT_CONFIG = {
     serverUrl: 'ws://localhost:8080',

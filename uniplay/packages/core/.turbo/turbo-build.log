@@ -2,3 +2,5 @@
 > @uniplay/core@0.1.0 build D:\server\uniplay\packages\core
 > tsc
 
+src/network/DeltaCompressor.ts(1,29): error TS2307: Cannot find module '@uniplay/core' or its corresponding type declarations.
+ ELIFECYCLE  Command failed with exit code 2.

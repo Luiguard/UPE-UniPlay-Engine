@@ -1,0 +1,7 @@
+
+> @uniplay/proxy@0.1.0 build D:\server\uniplay\packages\proxy
+> tsc
+
+src/PacketProxy.ts(1,25): error TS2305: Module '"@uniplay/client"' has no exported member 'MicrotaskType'.
+src/PacketProxy.ts(1,40): error TS2459: Module '"@uniplay/client"' declares 'InputFrame' locally, but it is not exported.
+ ELIFECYCLE  Command failed with exit code 2.

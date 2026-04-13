@@ -1,68 +1,72 @@
-export class ZoneManager {
-    zones = new Map();
-    entities = new Map();
-    addZone(config) {
-        this.zones.set(config.id, config);
-    }
-    assignEntityToZone(entityId, state) {
-        // Einfache Zuweisung: Prüfe Bounds
-        for (const [zoneId, zone] of this.zones) {
-            if (this.isInZone(state.position, zone)) {
-                this.entities.set(entityId, { zoneId, state });
-                return zoneId;
-            }
-        }
-        return null; // Keine Zone gefunden
-    }
-    isInZone(position, zone) {
-        return position.x >= zone.bounds.x &&
-            position.x <= zone.bounds.x + zone.bounds.width &&
-            position.y >= zone.bounds.y &&
-            position.y <= zone.bounds.y + zone.bounds.height;
-    }
-    getZoneSnapshot(zoneId, tick) {
-        const zone = this.zones.get(zoneId);
-        if (!zone)
-            return null;
-        const entities = Array.from(this.entities.values())
-            .filter(e => e.zoneId === zoneId)
-            .map(e => e.state);
-        return {
-            zoneId,
-            entities,
-            tick,
-            hash: this.generateHash(entities),
-        };
-    }
-    generateHash(entities) {
-        // Einfacher Hash
-        return entities.length.toString();
-    }
-    // Dynamisches Sharding: Teile Zone bei Überlastung
-    shardZone(zoneId) {
-        const zone = this.zones.get(zoneId);
-        if (!zone || zone.maxEntities === undefined)
-            return;
-        const entityCount = Array.from(this.entities.values()).filter(e => e.zoneId === zoneId).length;
-        if (entityCount > zone.maxEntities) {
-            // Teile Zone in 4 Quadranten
-            const halfWidth = zone.bounds.width / 2;
-            const halfHeight = zone.bounds.height / 2;
-            const newZones = [
-                { ...zone, id: `${zoneId}_tl`, bounds: { ...zone.bounds, width: halfWidth, height: halfHeight } },
-                { ...zone, id: `${zoneId}_tr`, bounds: { ...zone.bounds, x: zone.bounds.x + halfWidth, width: halfWidth, height: halfHeight } },
-                { ...zone, id: `${zoneId}_bl`, bounds: { ...zone.bounds, y: zone.bounds.y + halfHeight, width: halfWidth, height: halfHeight } },
-                { ...zone, id: `${zoneId}_br`, bounds: { ...zone.bounds, x: zone.bounds.x + halfWidth, y: zone.bounds.y + halfHeight, width: halfWidth, height: halfHeight } },
-            ];
-            newZones.forEach(z => this.addZone(z));
-            this.zones.delete(zoneId);
-            // Reassign Entities
-            for (const [entityId, data] of this.entities) {
-                if (data.zoneId === zoneId) {
-                    this.assignEntityToZone(entityId, data.state);
-                }
-            }
-        }
+export class Zone {
+    id;
+    bounds;
+    activeSimulators = new Set();
+    constructor(config) {
+        this.id = config.id;
+        this.bounds = config.bounds;
     }
 }
-//# sourceMappingURL=zoneManager.js.map
+export class ZoneManager {
+    zones = new Map();
+    entityZoneMap = new Map();
+    stateAnchor;
+    constructor(stateAnchor) {
+        this.stateAnchor = stateAnchor;
+    }
+    registerZone(config) {
+        const zone = new Zone(config);
+        this.zones.set(config.id, zone);
+        return zone;
+    }
+    getZone(zoneId) {
+        return this.zones.get(zoneId);
+    }
+    // Step 2: Zonen-Migration & Ownership
+    assignEntityToZone(entityId, zoneId) {
+        this.entityZoneMap.set(entityId, zoneId);
+    }
+    addSimulatorToZone(zoneId, clientId) {
+        const zone = this.zones.get(zoneId);
+        if (zone) {
+            zone.activeSimulators.add(clientId);
+        }
+    }
+    removeSimulatorFromZone(zoneId, clientId) {
+        const zone = this.zones.get(zoneId);
+        if (zone) {
+            zone.activeSimulators.delete(clientId);
+        }
+    }
+    // Step 4: Shadow-Mode beim Zonenwechsel (Preparation)
+    async prepareShadowZone(entityId, nextZoneId) {
+        // Deliver the target zone state to the client in advance so they simulate in shadow mode
+        return this.stateAnchor.getByZone(nextZoneId);
+    }
+    // Step 4: Authority-Handover mit Snapshot
+    commitZoneTransfer(entityId, nextZoneId, currentTick) {
+        const currentState = this.stateAnchor.read(entityId);
+        if (!currentState)
+            return false;
+        // Remove from old zone, assign to new
+        const oldZoneId = this.entityZoneMap.get(entityId);
+        if (oldZoneId === nextZoneId)
+            return true; // Already there
+        // State Update for transfer
+        currentState.zoneId = nextZoneId;
+        currentState.tick = currentTick;
+        this.stateAnchor.write(entityId, currentState);
+        this.assignEntityToZone(entityId, nextZoneId);
+        return true;
+    }
+    getZoneForPosition(x, y) {
+        for (const zone of this.zones.values()) {
+            if (x >= zone.bounds.x && x < zone.bounds.x + zone.bounds.width &&
+                y >= zone.bounds.y && y < zone.bounds.y + zone.bounds.height) {
+                return zone.id;
+            }
+        }
+        return null;
+    }
+}
+//# sourceMappingURL=ZoneManager.js.map

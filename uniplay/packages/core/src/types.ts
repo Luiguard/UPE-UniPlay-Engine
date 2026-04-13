@@ -11,6 +11,7 @@ export type ClientID = string;
 export type ZoneID = string;
 export type TaskID = string;
 export type Tick = number;
+export type NodeID = string;
 
 // ─── Vec3 ──────────────────────────────────────────
 export interface IVec3 {
@@ -21,21 +22,13 @@ export interface IVec3 {
 
 // ─── Input ─────────────────────────────────────────
 export interface InputFrame {
-  /** Client tick when this input was generated */
   tick: Tick;
-  /** Movement direction X (-1 to 1) */
   moveX: number;
-  /** Movement direction Y (-1 to 1) */
   moveY: number;
-  /** Movement direction Z (-1 to 1), for 3D */
   moveZ: number;
-  /** Jump pressed */
   jump: boolean;
-  /** Sprint pressed */
   sprint: boolean;
-  /** Action button (interact, attack, ...) */
   action: boolean;
-  /** Timestamp in ms (client local) */
   timestamp: number;
 }
 
@@ -68,15 +61,12 @@ export enum ObjectState {
 
 // ─── Anchor State (Server-Authoritative) ───────────
 export interface AnchorState extends EntityState {
-  /** Server tick at which this anchor was written */
   tick: Tick;
-  /** Zone this entity belongs to */
   zoneId: ZoneID;
-  /** Health (0-100) */
   health: number;
 }
 
-// ─── Zone ──────────────────────────────────────────
+// ─── Zone System ───────────────────────────────────
 export interface ZoneBounds {
   x: number;
   y: number;
@@ -98,52 +88,43 @@ export interface ZoneSnapshot {
   hash: string;
 }
 
-// ─── Microtask ───────────────────────────────────
+// ─── Microtasks & Consensus ────────────────────────
+export enum MicrotaskType {
+  PHYSICS_STEP    = 0,
+  NPC_AI          = 1,
+  COLLISION_CHECK = 2,
+  ZONE_HASH       = 3,
+  PATHFINDING     = 4,
+}
+
 export interface Microtask {
   id: TaskID;
   type: MicrotaskType;
-  data: MicrotaskData;
-  assignedClients: ClientID[];
-  deadline: number; // ms timestamp
-  maxExecutionTime: number; // ms, e.g. 2
-}
-
-export enum MicrotaskType {
-  PHYSICS_UPDATE = 'physics_update',
-  AI_DECISION = 'ai_decision',
-  COLLISION_CHECK = 'collision_check',
-  // Add more as needed
-}
-
-export interface MicrotaskData {
-  entityId?: EntityID;
-  zoneId?: ZoneID;
-  input?: InputFrame;
-  state?: EntityState;
-  // Flexible for different task types
-  [key: string]: unknown;
+  targetId: EntityID | ZoneID;
+  tick: Tick;
+  data: any; // Context required for the task
 }
 
 export interface MicrotaskResult {
   taskId: TaskID;
-  clientId: ClientID;
-  result: EntityState | boolean | number; // Depending on task type
-  executionTime: number; // ms
-  timestamp: number;
+  type: MicrotaskType;
+  targetId: EntityID | ZoneID;
+  tick: Tick;
+  newStateHash: string;
+  resultData: any; // E.g., mutated EntityState
 }
 
-// ─── Consensus ─────────────────────────────────────
 export interface ConsensusVote {
   taskId: TaskID;
   clientId: ClientID;
-  result: EntityState | MicrotaskResult;
+  result: MicrotaskResult;
   tick: Tick;
   timestamp: number;
 }
 
 export interface ConsensusResult {
   taskId: TaskID;
-  winner: EntityState | MicrotaskResult;
+  winner: MicrotaskResult;
   confidence: number;
   voterCount: number;
   tick: Tick;
@@ -156,17 +137,26 @@ export enum ConsensusOutcome {
   TIMEOUT     = 3,
 }
 
+// ─── Geographic Nodes & Regions ────────────────────
+export interface EdgeNode {
+  id: NodeID;
+  region: string;
+  host: string;
+  capacity: number;
+  activeZones: ZoneID[];
+}
+
+export interface LatencyMatrix {
+  playerId: ClientID;
+  pingToNode: Record<NodeID, number>;
+}
+
 // ─── Correction ────────────────────────────────────
 export interface CorrectionResult {
-  /** Whether a correction is needed */
   needsCorrection: boolean;
-  /** Position delta */
   positionDelta: IVec3;
-  /** Corrected velocity (Velocity-Correction, Mechanism #7) */
   correctedVelocity: IVec3;
-  /** Distance between client and server positions */
   distance: number;
-  /** Interpolation factor (0-1) */
   lerpFactor: number;
 }
 
@@ -178,41 +168,26 @@ export interface ValidationResult {
 
 // ─── Server Config ─────────────────────────────────
 export interface ServerConfig {
-  /** Server tick rate in Hz (default: 60) */
   tickRate: number;
-  /** WebSocket port */
   port: number;
-  /** Maximum connected players */
   maxPlayers: number;
-  /** Zone definitions */
   zones: ZoneConfig[];
-  /** Maximum ticks a client can be ahead (default: 2) */
   maxClientLead: number;
-  /** Consensus quorum (default: 2) */
   consensusQuorum: number;
-  /** Heartbeat interval in ms (default: 1000) */
   heartbeatInterval: number;
-  /** State hash interval in ticks (default: 60, ~1s) */
   stateHashInterval: number;
+  interestRadius: number; // For Interest Management
 }
 
 // ─── Client Config ─────────────────────────────────
 export interface ClientConfig {
-  /** Server WebSocket URL */
   serverUrl: string;
-  /** Enable client-side prediction (default: true) */
   prediction: boolean;
-  /** Reconciliation mode */
   reconciliation: 'smooth' | 'snap' | 'off';
-  /** Input buffer size in frames (default: 18 = ~300ms at 60Hz) */
   inputBufferSize: number;
-  /** Enable visual smoothing (default: true) */
   visualSmoothing: boolean;
-  /** Lerp speed for smooth corrections (default: 0.08) */
   lerpSpeed: number;
-  /** Jitter buffer size in frames (default: 3) */
   jitterBufferSize: number;
-  /** Dead reckoning enabled (default: true) */
   deadReckoning: boolean;
 }
 
@@ -227,7 +202,8 @@ export enum MessageType {
   PLAYER_JOIN       = 0x06,
   PLAYER_LEAVE      = 0x07,
   WELCOME           = 0x08,
-  MICROTASK_ASSIGN  = 0x09,
+  ASSIGN_TASK       = 0x09,
+  MIGRATE_EDGE      = 0x0A, // Geografische Optimierung
 
   // Client → Server
   INPUT             = 0x10,
@@ -235,7 +211,6 @@ export enum MessageType {
   STATE_HASH        = 0x12,
   ZONE_ENTER_REQ    = 0x13,
   ZONE_LEAVE_REQ    = 0x14,
-  MICROTASK_RESULT  = 0x15,
 
   // Bidirectional
   PING              = 0x20,
@@ -262,8 +237,13 @@ export interface WelcomePayload {
   zoneSnapshots: ZoneSnapshot[];
 }
 
+export interface AssignTaskPayload {
+  task: Microtask;
+}
+
 export interface StateUpdatePayload {
-  entities: AnchorState[];
+  entities: AnchorState[]; // Used if uncompressed
+  deltas?: any[]; // Used if delta compressed
   tick: Tick;
 }
 
@@ -272,12 +252,9 @@ export interface InputPayload {
   frames: InputFrame[];
 }
 
-export interface MicrotaskAssignPayload {
-  tasks: Microtask[];
-}
-
-export interface MicrotaskResultPayload {
-  results: MicrotaskResult[];
+export interface MigrateEdgePayload {
+  newNodeUrl: string;
+  targetZone: ZoneID;
 }
 
 // ─── Events ────────────────────────────────────────
@@ -304,6 +281,7 @@ export const DEFAULT_SERVER_CONFIG: ServerConfig = {
   consensusQuorum: 2,
   heartbeatInterval: 1000,
   stateHashInterval: 60,
+  interestRadius: 150.0 // Distance threshold
 };
 
 export const DEFAULT_CLIENT_CONFIG: ClientConfig = {

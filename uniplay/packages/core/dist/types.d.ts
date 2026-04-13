@@ -9,27 +9,20 @@ export type ClientID = string;
 export type ZoneID = string;
 export type TaskID = string;
 export type Tick = number;
+export type NodeID = string;
 export interface IVec3 {
     x: number;
     y: number;
     z: number;
 }
 export interface InputFrame {
-    /** Client tick when this input was generated */
     tick: Tick;
-    /** Movement direction X (-1 to 1) */
     moveX: number;
-    /** Movement direction Y (-1 to 1) */
     moveY: number;
-    /** Movement direction Z (-1 to 1), for 3D */
     moveZ: number;
-    /** Jump pressed */
     jump: boolean;
-    /** Sprint pressed */
     sprint: boolean;
-    /** Action button (interact, attack, ...) */
     action: boolean;
-    /** Timestamp in ms (client local) */
     timestamp: number;
 }
 export interface EntityState {
@@ -56,11 +49,8 @@ export declare enum ObjectState {
     SPECTATING = 3
 }
 export interface AnchorState extends EntityState {
-    /** Server tick at which this anchor was written */
     tick: Tick;
-    /** Zone this entity belongs to */
     zoneId: ZoneID;
-    /** Health (0-100) */
     health: number;
 }
 export interface ZoneBounds {
@@ -81,43 +71,38 @@ export interface ZoneSnapshot {
     tick: Tick;
     hash: string;
 }
+export declare enum MicrotaskType {
+    PHYSICS_STEP = 0,
+    NPC_AI = 1,
+    COLLISION_CHECK = 2,
+    ZONE_HASH = 3,
+    PATHFINDING = 4
+}
 export interface Microtask {
     id: TaskID;
     type: MicrotaskType;
-    data: MicrotaskData;
-    assignedClients: ClientID[];
-    deadline: number;
-    maxExecutionTime: number;
-}
-export declare enum MicrotaskType {
-    PHYSICS_UPDATE = "physics_update",
-    AI_DECISION = "ai_decision",
-    COLLISION_CHECK = "collision_check"
-}
-export interface MicrotaskData {
-    entityId?: EntityID;
-    zoneId?: ZoneID;
-    input?: InputFrame;
-    state?: EntityState;
-    [key: string]: unknown;
+    targetId: EntityID | ZoneID;
+    tick: Tick;
+    data: any;
 }
 export interface MicrotaskResult {
     taskId: TaskID;
-    clientId: ClientID;
-    result: EntityState | boolean | number;
-    executionTime: number;
-    timestamp: number;
+    type: MicrotaskType;
+    targetId: EntityID | ZoneID;
+    tick: Tick;
+    newStateHash: string;
+    resultData: any;
 }
 export interface ConsensusVote {
     taskId: TaskID;
     clientId: ClientID;
-    result: EntityState | MicrotaskResult;
+    result: MicrotaskResult;
     tick: Tick;
     timestamp: number;
 }
 export interface ConsensusResult {
     taskId: TaskID;
-    winner: EntityState | MicrotaskResult;
+    winner: MicrotaskResult;
     confidence: number;
     voterCount: number;
     tick: Tick;
@@ -128,16 +113,22 @@ export declare enum ConsensusOutcome {
     TIE = 2,
     TIMEOUT = 3
 }
+export interface EdgeNode {
+    id: NodeID;
+    region: string;
+    host: string;
+    capacity: number;
+    activeZones: ZoneID[];
+}
+export interface LatencyMatrix {
+    playerId: ClientID;
+    pingToNode: Record<NodeID, number>;
+}
 export interface CorrectionResult {
-    /** Whether a correction is needed */
     needsCorrection: boolean;
-    /** Position delta */
     positionDelta: IVec3;
-    /** Corrected velocity (Velocity-Correction, Mechanism #7) */
     correctedVelocity: IVec3;
-    /** Distance between client and server positions */
     distance: number;
-    /** Interpolation factor (0-1) */
     lerpFactor: number;
 }
 export interface ValidationResult {
@@ -145,39 +136,24 @@ export interface ValidationResult {
     reason?: string;
 }
 export interface ServerConfig {
-    /** Server tick rate in Hz (default: 60) */
     tickRate: number;
-    /** WebSocket port */
     port: number;
-    /** Maximum connected players */
     maxPlayers: number;
-    /** Zone definitions */
     zones: ZoneConfig[];
-    /** Maximum ticks a client can be ahead (default: 2) */
     maxClientLead: number;
-    /** Consensus quorum (default: 2) */
     consensusQuorum: number;
-    /** Heartbeat interval in ms (default: 1000) */
     heartbeatInterval: number;
-    /** State hash interval in ticks (default: 60, ~1s) */
     stateHashInterval: number;
+    interestRadius: number;
 }
 export interface ClientConfig {
-    /** Server WebSocket URL */
     serverUrl: string;
-    /** Enable client-side prediction (default: true) */
     prediction: boolean;
-    /** Reconciliation mode */
     reconciliation: 'smooth' | 'snap' | 'off';
-    /** Input buffer size in frames (default: 18 = ~300ms at 60Hz) */
     inputBufferSize: number;
-    /** Enable visual smoothing (default: true) */
     visualSmoothing: boolean;
-    /** Lerp speed for smooth corrections (default: 0.08) */
     lerpSpeed: number;
-    /** Jitter buffer size in frames (default: 3) */
     jitterBufferSize: number;
-    /** Dead reckoning enabled (default: true) */
     deadReckoning: boolean;
 }
 export declare enum MessageType {
@@ -189,13 +165,13 @@ export declare enum MessageType {
     PLAYER_JOIN = 6,
     PLAYER_LEAVE = 7,
     WELCOME = 8,
-    MICROTASK_ASSIGN = 9,
+    ASSIGN_TASK = 9,
+    MIGRATE_EDGE = 10,// Geografische Optimierung
     INPUT = 16,
     CONSENSUS_VOTE = 17,
     STATE_HASH = 18,
     ZONE_ENTER_REQ = 19,
     ZONE_LEAVE_REQ = 20,
-    MICROTASK_RESULT = 21,
     PING = 32,
     PONG = 33
 }
@@ -216,19 +192,21 @@ export interface WelcomePayload {
     tickRate: number;
     zoneSnapshots: ZoneSnapshot[];
 }
+export interface AssignTaskPayload {
+    task: Microtask;
+}
 export interface StateUpdatePayload {
     entities: AnchorState[];
+    deltas?: any[];
     tick: Tick;
 }
 export interface InputPayload {
     clientId: ClientID;
     frames: InputFrame[];
 }
-export interface MicrotaskAssignPayload {
-    tasks: Microtask[];
-}
-export interface MicrotaskResultPayload {
-    results: MicrotaskResult[];
+export interface MigrateEdgePayload {
+    newNodeUrl: string;
+    targetZone: ZoneID;
 }
 export interface GameEvent {
     type: string;
