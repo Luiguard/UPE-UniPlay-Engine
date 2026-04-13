@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniPlay Engine – Universal Multiplayer Blueprint</title>
+  <meta name="description" content="A modular, scalable universal multiplayer engine architecture supporting every game genre – from Minecraft sandboxes to AAA shooters. Featuring 20 anti-rollback mechanisms for zero-glitch multiplayer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════ NAV ═══════════════ -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <div class="logo-icon">⬡</div>
+        <span>UniPlay<strong>Engine</strong></span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#modules">Modules</a></li>
+        <li><a href="#api">SDK / API</a></li>
+        <li><a href="#genres">Genres</a></li>
+        <li><a href="#scaling">Scaling</a></li>
+        <li><a href="#anchor">State Anchor</a></li>
+        <li><a href="#netsync">NetSync</a></li>
+        <li><a href="#sdk-start" class="btn-nav">Get Started</a></li>
+      </ul>
+      <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <a href="#architecture">Architecture</a>
+    <a href="#modules">Modules</a>
+    <a href="#api">SDK / API</a>
+    <a href="#genres">Genres</a>
+    <a href="#scaling">Scaling</a>
+    <a href="#anchor">State Anchor</a>
+    <a href="#netsync">NetSync</a>
+  </div>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge">Universal Multiplayer Ecosystem</div>
+      <h1>The Engine That<br /><span class="gradient-text">Runs Every Game</span></h1>
+      <p class="hero-sub">A distributed, client-powered multiplayer framework — modular, scalable, genre-agnostic. From Minecraft to Call of Duty to Social Survival.</p>
+      <div class="hero-cta">
+        <a href="#architecture" class="btn-primary">Explore Blueprint</a>
+        <a href="#netsync" class="btn-ghost">NetSync Shield →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" data-target="10000">0</span><span>Max Players</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="20">0</span><span>Anti-Rollback Layers</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="7">0</span><span>Defense Layers</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="98">0</span><span>% Glitch Reduction</span></div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">scroll ↓</div>
+  </section>
+
+  <!-- ═══════════════ ARCHITECTURE ═══════════════ -->
+  <section id="architecture" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">Foundation</div>
+        <h2>4-Layer Architecture</h2>
+        <p>Every component is encapsulated in one of four independent layers. Swap, extend, or replace any layer without touching the others.</p>
+      </div>
+
+      <div class="arch-stack" id="archStack">
+        <!-- Layer 4 -->
+        <div class="arch-layer" data-layer="4" style="--hue:200">
+          <div class="arch-layer-header">
+            <div class="arch-layer-num">04</div>
+            <div>
+              <div class="arch-layer-tag">Presentation</div>
+              <div class="arch-layer-title">Presentation Layer</div>
+            </div>
+            <div class="arch-layer-badge">Client-Side</div>
+          </div>
+          <div class="arch-layer-body">
+            <div class="arch-chips">
+              <span>Graphics</span><span>Sound</span><span>UI / HUD</span><span>Effects</span><span>Animations</span>
+            </div>
+            <p>Completely decoupled from engine internals. Use any renderer — Three.js, Unreal, Unity, Godot, or custom.</p>
+          </div>
+        </div>
+
+        <!-- Layer 3 -->
+        <div class="arch-layer" data-layer="3" style="--hue:270">
+          <div class="arch-layer-header">
+            <div class="arch-layer-num">03</div>
+            <div>
+              <div class="arch-layer-tag">Developer Layer</div>
+              <div class="arch-layer-title">Game Logic Layer</div>
+            </div>
+            <div class="arch-layer-badge">Dev-Defined</div>
+          </div>
+          <div class="arch-layer-body">
+            <div class="arch-chips">
+              <span>Items</span><span>Weapons</span><span>Blocks</span><span>Abilities</span><span>Rules</span><span>UI Logic</span><span>Mission Logic</span>
+            </div>
+            <p>The developer defines game-specific content via the SDK API. Pure business logic — no engine internals required.</p>
+          </div>
+        </div>
+
+        <!-- Layer 2 -->
+        <div class="arch-layer active" data-layer="2" style="--hue:330">
+          <div class="arch-layer-header">
+            <div class="arch-layer-num">02</div>
+            <div>
+              <div class="arch-layer-tag">SIM-Layer</div>
+              <div class="arch-layer-title">Simulation Modules</div>
+            </div>
+            <div class="arch-layer-badge highlight">Modular ✓</div>
+          </div>
+          <div class="arch-layer-body">
+            <div class="sim-module-grid">
+              <div class="sim-mod" data-mod="A">
+                <div class="sim-mod-icon">⚡</div>
+                <div class="sim-mod-name">Module A</div>
+                <div class="sim-mod-label">Physics</div>
+              </div>
+              <div class="sim-mod" data-mod="B">
+                <div class="sim-mod-icon">🌍</div>
+                <div class="sim-mod-name">Module B</div>
+                <div class="sim-mod-label">World</div>
+              </div>
+              <div class="sim-mod" data-mod="C">
+                <div class="sim-mod-icon">🤖</div>
+                <div class="sim-mod-name">Module C</div>
+                <div class="sim-mod-label">AI / NPC</div>
+              </div>
+              <div class="sim-mod" data-mod="D">
+                <div class="sim-mod-icon">🧬</div>
+                <div class="sim-mod-name">Module D</div>
+                <div class="sim-mod-label">Survival</div>
+              </div>
+              <div class="sim-mod" data-mod="E">
+                <div class="sim-mod-icon">⚔️</div>
+                <div class="sim-mod-name">Module E</div>
+                <div class="sim-mod-label">Combat</div>
+              </div>
+              <div class="sim-mod" data-mod="F">
+                <div class="sim-mod-icon">💰</div>
+                <div class="sim-mod-name">Module F</div>
+                <div class="sim-mod-label">Economy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 1 -->
+        <div class="arch-layer" data-layer="1" style="--hue:40">
+          <div class="arch-layer-header">
+            <div class="arch-layer-num">01</div>
+            <div>
+              <div class="arch-layer-tag">Core</div>
+              <div class="arch-layer-title">Core Distributed Engine (CDE)</div>
+            </div>
+            <div class="arch-layer-badge">Genre-Agnostic</div>
+          </div>
+          <div class="arch-layer-body">
+            <div class="cde-grid">
+              <div class="cde-item"><div class="cde-icon">🗺️</div><div>Zone System</div><small>Map Sharding, Dynamic</small></div>
+              <div class="cde-item"><div class="cde-icon">📋</div><div>Task Scheduler</div><small>Distributed to Clients</small></div>
+              <div class="cde-item"><div class="cde-icon">🔁</div><div>Redundancy Mgr</div><small>2–3 Clients / Task</small></div>
+              <div class="cde-item"><div class="cde-icon">⚖️</div><div>Consensus Engine</div><small>Truth Arbitration</small></div>
+              <div class="cde-item"><div class="cde-icon">🛡️</div><div>Anti-Cheat</div><small>Plausibility-Based</small></div>
+              <div class="cde-item"><div class="cde-icon">💾</div><div>State Server</div><small>Central Truth Anchor</small></div>
+              <div class="cde-item"><div class="cde-icon">📡</div><div>Network Layer</div><small>Real-time Sync</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MODULES ═══════════════ -->
+  <section id="modules" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">SIM-Layer</div>
+        <h2>Simulation Modules</h2>
+        <p>Pick only what your game needs. Each module is independently activatable and plugs into the CDE via standardized hooks.</p>
+      </div>
+
+      <div class="modules-grid">
+        <!-- Module A -->
+        <div class="module-card" data-module="A">
+          <div class="module-card-header">
+            <div class="module-icon-wrap" style="--c:#f59e0b">⚡</div>
+            <div>
+              <div class="module-letter">Module A</div>
+              <div class="module-name">Physics Simulation</div>
+            </div>
+          </div>
+          <ul class="module-features">
+            <li>Collisions &amp; Rigid Bodies</li>
+            <li>Projectile Trajectories</li>
+            <li>Gravity &amp; Forces</li>
+            <li>Vehicle Physics</li>
+            <li>Destruction Systems</li>
+          </ul>
+          <div class="module-genres">
+            <span style="--gc:#ef4444">Shooter</span>
+            <span style="--gc:#8b5cf6">Racing</span>
+            <span style="--gc:#3b82f6">Action</span>
+          </div>
+        </div>
+
+        <!-- Module B -->
+        <div class="module-card" data-module="B">
+          <div class="module-card-header">
+            <div class="module-icon-wrap" style="--c:#10b981">🌍</div>
+            <div>
+              <div class="module-letter">Module B</div>
+              <div class="module-name">World Simulation</div>
+            </div>
+          </div>
+          <ul class="module-features">
+            <li>Voxel Updates</li>
+            <li>Terrain Modification</li>
+            <li>Crafting Object Simulation</li>
+            <li>Building Placement</li>
+            <li>Fluid &amp; Light Propagation</li>
+          </ul>
+          <div class="module-genres">
+            <span style="--gc:#10b981">Sandbox</span>
+            <span style="--gc:#f59e0b">Survival</span>
+            <span style="--gc:#6366f1">Builder</span>
+          </div>
+        </div>
+
+        <!-- Module C -->
+        <div class="module-card" data-module="C">
+          <div class="module-card-header">
+            <div class="module-icon-wrap" style="--c:#6366f1">🤖</div>
+            <div>
+              <div class="module-letter">Module C</div>
+              <div class="module-name">AI / NPC</div>
+            </div>
+          </div>
+          <ul class="module-features">
+            <li>Pathfinding (A*, NavMesh)</li>
+            <li>Behavior Trees</li>
+            <li>Horde / Crowd Systems</li>
+            <li>Merchants &amp; Civilians</li>
+            <li>Dynamic Reactions</li>
+          </ul>
+          <div class="module-genres">
+            <span style="--gc:#8b5cf6">RPG</span>
+            <span style="--gc:#10b981">Survival</span>
+            <span style="--gc:#f59e0b">MMO</span>
+          </div>
+        </div>
+
+        <!-- Module D -->
+        <div class="module-card" data-module="D">
+          <div class="module-card-header">
+            <div class="module-icon-wrap" style="--c:#ec4899">🧬</div>
+            <div>
+              <div class="module-letter">Module D</div>
+              <div class="module-name">Social / Survival</div>
+            </div>
+          </div>
+          <ul class="module-features">
+            <li>Hunger &amp; Thirst</li>
+            <li>Temperature &amp; Weather</li>
+            <li>Disease Systems</li>
+            <li>Crafting Recipes</li>
+            <li>Resource Spawning</li>
+          </ul>
+          <div class="module-genres">
+            <span style="--gc:#ec4899">Social</span>
+            <span style="--gc:#10b981">Survival</span>
+            <span style="--gc:#f59e0b">The Cube</span>
+          </div>
+        </div>
+
+        <!-- Module E -->
+        <div class="module-card" data-module="E">
+          <div class="module-card-header">
+            <div class="module-icon-wrap" style="--c:#ef4444">⚔️</div>
+            <div>
+              <div class="module-letter">Module E</div>
+              <div class="module-name">Combat</div>
+            </div>
+          </div>
+          <ul class="module-features">
+            <li>Weapon Systems</li>
+            <li>Hit Detection / Zones</li>
+            <li>Armor &amp; Defense</li>
+            <li>Damage Models</li>
+            <li>Ballistics &amp; Recoil</li>
+          </ul>
+          <div class="module-genres">
+            <span style="--gc:#ef4444">Shooter</span>
+            <span style="--gc:#8b5cf6">RPG</span>
+            <span style="--gc:#f97316">Battle Royale</span>
+          </div>
+        </div>
+
+        <!-- Module F -->
+        <div class="module-card" data-module="F">
+          <div class="module-card-header">
+            <div class="module-icon-wrap" style="--c:#f59e0b">💰</div>
+            <div>
+              <div class="module-letter">Module F</div>
+              <div class="module-name">Economy / Meta</div>
+            </div>
+          </div>
+          <ul class="module-features">
+            <li>Player Trading</li>
+            <li>Currency Systems</li>
+            <li>Persistent World State</li>
+            <li>Auction Houses</li>
+            <li>Progress Persistence</li>
+          </ul>
+          <div class="module-genres">
+            <span style="--gc:#f59e0b">MMO</span>
+            <span style="--gc:#6366f1">Social</span>
+            <span style="--gc:#10b981">Open World</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ API / SDK ═══════════════ -->
+  <section id="api" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">SDK Reference</div>
+        <h2>Universal API</h2>
+        <p>One API to rule every genre. Plug your game logic into any module via standardized hooks and callbacks.</p>
+      </div>
+
+      <div class="api-tabs">
+        <button class="api-tab active" data-tab="objects">Objects</button>
+        <button class="api-tab" data-tab="zones">Zones</button>
+        <button class="api-tab" data-tab="sim">Sim Hooks</button>
+        <button class="api-tab" data-tab="consensus">Consensus</button>
+        <button class="api-tab" data-tab="events">Events</button>
+        <button class="api-tab" data-tab="persistence">Persistence</button>
+      </div>
+
+      <div class="api-panel active" data-panel="objects">
+        <div class="api-desc">Register any game object – block, item, NPC, vehicle – with a unified type-safe registry.</div>
+        <div class="code-block">
+          <div class="code-toolbar"><span class="code-lang">TypeScript</span><button class="copy-btn" data-copy="objects">Copy</button></div>
+          <pre><code><span class="kw">import</span> { UniPlayEngine } <span class="kw">from</span> <span class="str">'@uniplay/core'</span>;
+
+<span class="cm">// Register a custom block type</span>
+UniPlayEngine.<span class="fn">RegisterObject</span>(<span class="str">'block'</span>, {
+  id: <span class="str">'diamond_ore'</span>,
+  hardness: <span class="num">5.0</span>,
+  dropTable: [{ item: <span class="str">'diamond'</span>, chance: <span class="num">0.8</span> }],
+  physics: { solid: <span class="kw">true</span>, mass: <span class="num">1200</span> },
+  modules: [<span class="str">'WorldSim'</span>, <span class="str">'Physics'</span>]
+});
+
+<span class="cm">// Register a weapon</span>
+UniPlayEngine.<span class="fn">RegisterObject</span>(<span class="str">'weapon'</span>, {
+  id: <span class="str">'ak47'</span>,
+  damage: <span class="num">34</span>,
+  fireRate: <span class="num">600</span>,
+  recoilPattern: <span class="str">'ak_recoil_v2'</span>,
+  modules: [<span class="str">'Combat'</span>, <span class="str">'Physics'</span>]
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="api-panel" data-panel="zones">
+        <div class="api-desc">Zone callbacks fire when players enter, update, or leave map shards. Use them to load/unload simulation data dynamically.</div>
+        <div class="code-block">
+          <div class="code-toolbar"><span class="code-lang">TypeScript</span><button class="copy-btn" data-copy="zones">Copy</button></div>
+          <pre><code><span class="cm">// Zone lifecycle hooks</span>
+UniPlayEngine.<span class="fn">OnZoneEnter</span>((zoneID, player) => {
+  console.<span class="fn">log</span>(<span class="str">`Player entered zone: ${zoneID}`</span>);
+  WorldSim.<span class="fn">loadChunks</span>(zoneID);
+  NPC.<span class="fn">spawnHorde</span>(zoneID, <span class="str">'wolf'</span>, { count: <span class="num">5</span> });
+});
+
+UniPlayEngine.<span class="fn">OnZoneUpdate</span>((zoneID, delta) => {
+  <span class="cm">// Called every server tick for active zones</span>
+  Physics.<span class="fn">step</span>(zoneID, delta);
+  Survival.<span class="fn">tickEnvironment</span>(zoneID, delta);
+});
+
+UniPlayEngine.<span class="fn">OnZoneLeave</span>((zoneID, player) => {
+  WorldSim.<span class="fn">unloadChunks</span>(zoneID);
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="api-panel" data-panel="sim">
+        <div class="api-desc">Hook into the simulation loop at any point. Each module exposes typed callback signatures.</div>
+        <div class="code-block">
+          <div class="code-toolbar"><span class="code-lang">TypeScript</span><button class="copy-btn" data-copy="sim">Copy</button></div>
+          <pre><code><span class="cm">// Physics step — called per tick per zone</span>
+Physics.<span class="fn">OnPhysicsStep</span>((ctx) => {
+  ctx.bodies.<span class="fn">forEach</span>(body => {
+    <span class="kw">if</span> (body.type === <span class="str">'projectile'</span>) {
+      Ballistics.<span class="fn">advanceTrajectory</span>(body, ctx.delta);
+    }
+  });
+});
+
+<span class="cm">// Voxel change — fires when a block is modified</span>
+WorldSim.<span class="fn">OnVoxelChange</span>((voxel, action) => {
+  <span class="kw">if</span> (action === <span class="str">'break'</span>) {
+    Lighting.<span class="fn">recalculate</span>(voxel.position, <span class="num">16</span>);
+    Fluids.<span class="fn">propagate</span>(voxel.position);
+  }
+});
+
+<span class="cm">// NPC update — runs on assigned client cluster</span>
+NPC.<span class="fn">OnNPCUpdate</span>((npc, delta) => {
+  BehaviorTree.<span class="fn">tick</span>(npc, delta);
+  Pathfinding.<span class="fn">step</span>(npc);
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="api-panel" data-panel="consensus">
+        <div class="api-desc">Client-computed results flow through the Consensus Engine. Submit results and react to the validated truth.</div>
+        <div class="code-block">
+          <div class="code-toolbar"><span class="code-lang">TypeScript</span><button class="copy-btn" data-copy="consensus">Copy</button></div>
+          <pre><code><span class="cm">// Each client submits their computed result</span>
+<span class="kw">const</span> taskID = <span class="str">'hit_detection_tick_1042'</span>;
+
+Consensus.<span class="fn">SubmitResult</span>(taskID, {
+  hitPlayerID: <span class="str">'player_77'</span>,
+  damage: <span class="num">34</span>,
+  hitzone: <span class="str">'torso'</span>,
+  timestamp: Date.<span class="fn">now</span>()
+});
+
+<span class="cm">// React when the server has resolved consensus</span>
+Consensus.<span class="fn">OnConsensusResolved</span>(taskID, (finalResult) => {
+  <span class="kw">if</span> (finalResult.hitPlayerID) {
+    Health.<span class="fn">applyDamage</span>(finalResult.hitPlayerID, finalResult.damage);
+    UI.<span class="fn">showHitmarker</span>(finalResult.hitzone);
+  }
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="api-panel" data-panel="events">
+        <div class="api-desc">A universal pub/sub event bus for cross-module communication and game-specific logic.</div>
+        <div class="code-block">
+          <div class="code-toolbar"><span class="code-lang">TypeScript</span><button class="copy-btn" data-copy="events">Copy</button></div>
+          <pre><code><span class="cm">// Send an event to all subscribers</span>
+EventBus.<span class="fn">SendEvent</span>(<span class="str">'player.died'</span>, {
+  playerID: <span class="str">'player_12'</span>,
+  cause: <span class="str">'starvation'</span>,
+  position: { x: <span class="num">120</span>, y: <span class="num">64</span>, z: <span class="num">-45</span> }
+});
+
+<span class="cm">// Listen for events anywhere in your game logic</span>
+EventBus.<span class="fn">OnEvent</span>(<span class="str">'player.died'</span>, (payload) => {
+  Respawn.<span class="fn">scheduleRespawn</span>(payload.playerID, <span class="num">30</span>);
+  UI.<span class="fn">showDeathScreen</span>(payload.cause);
+  Analytics.<span class="fn">record</span>(<span class="str">'death'</span>, payload);
+});
+
+<span class="cm">// Wildcard subscriptions</span>
+EventBus.<span class="fn">OnEvent</span>(<span class="str">'player.*'</span>, (type, payload) => {
+  Telemetry.<span class="fn">emit</span>(type, payload);
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="api-panel" data-panel="persistence">
+        <div class="api-desc">Unified persistence layer. Key-value store backed by your choice of database — Redis, PostgreSQL, or custom.</div>
+        <div class="code-block">
+          <div class="code-toolbar"><span class="code-lang">TypeScript</span><button class="copy-btn" data-copy="persistence">Copy</button></div>
+          <pre><code><span class="cm">// Save world state</span>
+<span class="kw">await</span> Store.<span class="fn">SaveState</span>(<span class="str">`world.${worldID}.blocks`</span>, chunkData);
+<span class="kw">await</span> Store.<span class="fn">SaveState</span>(<span class="str">`player.${playerID}.inventory`</span>, inventory);
+
+<span class="cm">// Load on reconnect</span>
+<span class="kw">const</span> blocks = <span class="kw">await</span> Store.<span class="fn">LoadState</span>(<span class="str">`world.${worldID}.blocks`</span>);
+<span class="kw">const</span> inv    = <span class="kw">await</span> Store.<span class="fn">LoadState</span>(<span class="str">`player.${playerID}.inventory`</span>);
+
+<span class="cm">// Scoped namespaces for game modules</span>
+<span class="kw">const</span> economy = Store.<span class="fn">namespace</span>(<span class="str">'economy'</span>);
+<span class="kw">await</span> economy.<span class="fn">SaveState</span>(<span class="str">'market.prices'</span>, priceTable);
+<span class="kw">const</span> prices = <span class="kw">await</span> economy.<span class="fn">LoadState</span>(<span class="str">'market.prices'</span>);</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ GENRES ═══════════════ -->
+  <section id="genres" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">Genre Coverage</div>
+        <h2>One Engine. Every Genre.</h2>
+        <p>Select a genre to see exactly which modules activate, what clients compute, and what the server handles.</p>
+      </div>
+
+      <div class="genre-selector">
+        <button class="genre-btn active" data-genre="sandbox">🎮 Sandbox</button>
+        <button class="genre-btn" data-genre="shooter">🔫 Shooter</button>
+        <button class="genre-btn" data-genre="cube">🧊 The Cube</button>
+        <button class="genre-btn" data-genre="mmo">⚔️ MMO / RPG</button>
+      </div>
+
+      <div class="genre-detail" id="genreDetail">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SCALING ═══════════════ -->
+  <section id="scaling" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">Infrastructure</div>
+        <h2>Scales from 10 to 10,000 Players</h2>
+        <p>The client cluster model means server load stays nearly flat as player count grows. Clients ARE the infrastructure.</p>
+      </div>
+
+      <div class="scaling-tiers">
+        <div class="scaling-tier" data-tier="small">
+          <div class="tier-header">
+            <div class="tier-badge" style="--tc:#10b981">10–50 Players</div>
+            <div class="tier-label">Small Server</div>
+          </div>
+          <div class="tier-bars">
+            <div class="tier-bar-row">
+              <span>Client Load</span>
+              <div class="bar-track"><div class="bar-fill" style="--pct:80%;--bc:#10b981"></div></div>
+              <span class="bar-pct">80%</span>
+            </div>
+            <div class="tier-bar-row">
+              <span>Server Load</span>
+              <div class="bar-track"><div class="bar-fill" style="--pct:20%;--bc:#ef4444"></div></div>
+              <span class="bar-pct">20%</span>
+            </div>
+          </div>
+          <ul class="tier-features">
+            <li>🖥️ 1 Server instance</li>
+            <li>📦 Full zone simulation</li>
+            <li>⚡ Low latency</li>
+          </ul>
+        </div>
+
+        <div class="scaling-tier active" data-tier="medium">
+          <div class="tier-header">
+            <div class="tier-badge" style="--tc:#6366f1">50–500 Players</div>
+            <div class="tier-label">Multi-Zone</div>
+          </div>
+          <div class="tier-bars">
+            <div class="tier-bar-row">
+              <span>Client Load</span>
+              <div class="bar-track"><div class="bar-fill" style="--pct:90%;--bc:#6366f1"></div></div>
+              <span class="bar-pct">90%</span>
+            </div>
+            <div class="tier-bar-row">
+              <span>Server Load</span>
+              <div class="bar-track"><div class="bar-fill" style="--pct:10%;--bc:#ef4444"></div></div>
+              <span class="bar-pct">10%</span>
+            </div>
+          </div>
+          <ul class="tier-features">
+            <li>🗺️ Dynamic zone sharding</li>
+            <li>🔁 Task distribution</li>
+            <li>⚖️ Consensus arbitration</li>
+          </ul>
+        </div>
+
+        <div class="scaling-tier" data-tier="large">
+          <div class="tier-header">
+            <div class="tier-badge" style="--tc:#f59e0b">500–10k Players</div>
+            <div class="tier-label">Mega World</div>
+          </div>
+          <div class="tier-bars">
+            <div class="tier-bar-row">
+              <span>Client Load</span>
+              <div class="bar-track"><div class="bar-fill" style="--pct:97%;--bc:#f59e0b"></div></div>
+              <span class="bar-pct">97%</span>
+            </div>
+            <div class="tier-bar-row">
+              <span>Server Load</span>
+              <div class="bar-track"><div class="bar-fill" style="--pct:3%;--bc:#ef4444"></div></div>
+              <span class="bar-pct">3%</span>
+            </div>
+          </div>
+          <ul class="tier-features">
+            <li>🌍 Clients simulate regions</li>
+            <li>🧠 Server = meta-consensus</li>
+            <li>♾️ Near-infinite scale</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="principles-row">
+        <div class="principle">
+          <div class="principle-icon">👥</div>
+          <div class="principle-title">Client Cluster</div>
+          <p>Every player is a Worker Node. Computation is distributed across the player pool automatically by the Task Scheduler.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-icon">🔁</div>
+          <div class="principle-title">Redundancy</div>
+          <p>Each task is computed by 2–3 independent clients. Outliers are rejected. No single point of failure.</p>
+        </div>
+        <div class="principle">
+          <div class="principle-icon">⚖️</div>
+          <div class="principle-title">Consensus</div>
+          <p>The server only arbitrates which result is valid. It never computes the result itself. Maximum efficiency.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ AUTHORITATIVE STATE ANCHOR ═══════════════ -->
+  <section id="anchor" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag anchor-tag">Missing Piece · Stability Core</div>
+        <h2>The Authoritative<br /><span class="gradient-text-anchor">State Anchor</span></h2>
+        <p>The one central, untouchable truth that only the server may write to. The final 1–2% glitch eliminator.</p>
+      </div>
+
+      <!-- WHY section: without vs. with -->
+      <div class="anchor-compare">
+        <div class="anchor-compare-col anchor-bad">
+          <div class="anchor-compare-header">
+            <span class="anchor-status-dot bad"></span>
+            <span>Without Anchor</span>
+            <span class="anchor-status-label bad">GLITCH SURFACE</span>
+          </div>
+          <ul class="anchor-compare-list">
+            <li>
+              <div class="glitch-icon">⚡</div>
+              <div>
+                <strong>Dual-zone drift</strong>
+                <span>Two zones diverge silently → late correction → rubber-band</span>
+              </div>
+            </li>
+            <li>
+              <div class="glitch-icon">⚡</div>
+              <div>
+                <strong>Zone-handover gap</strong>
+                <span>Two simulators hold slightly different states during transit</span>
+              </div>
+            </li>
+            <li>
+              <div class="glitch-icon">⚡</div>
+              <div>
+                <strong>Late consensus</strong>
+                <span>Client predicts, server resolves late → visible position snap</span>
+              </div>
+            </li>
+            <li>
+              <div class="glitch-icon">⚡</div>
+              <div>
+                <strong>Over-prediction</strong>
+                <span>Client runs too far ahead → server correction → snap back</span>
+              </div>
+            </li>
+            <li>
+              <div class="glitch-icon">⚡</div>
+              <div>
+                <strong>Object duplication</strong>
+                <span>Object exists in two zone versions simultaneously</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="anchor-arrow-col">
+          <div class="anchor-arrow-wrap">
+            <div class="anchor-arrow-icon">⚓</div>
+            <div class="anchor-arrow-label">Add the<br/>Anchor</div>
+            <div class="anchor-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="anchor-compare-col anchor-good">
+          <div class="anchor-compare-header">
+            <span class="anchor-status-dot good"></span>
+            <span>With State Anchor</span>
+            <span class="anchor-status-label good">ZERO DRIFT</span>
+          </div>
+          <ul class="anchor-compare-list">
+            <li>
+              <div class="fix-icon">✓</div>
+              <div>
+                <strong>Single source of truth</strong>
+                <span>Server holds the canonical state — always current, always final</span>
+              </div>
+            </li>
+            <li>
+              <div class="fix-icon">✓</div>
+              <div>
+                <strong>Clients submit proposals</strong>
+                <span>All simulation results are proposals — not facts</span>
+              </div>
+            </li>
+            <li>
+              <div class="fix-icon">✓</div>
+              <div>
+                <strong>Consensus feeds the Anchor</strong>
+                <span>Consensus majority → server validates → Anchor updated</span>
+              </div>
+            </li>
+            <li>
+              <div class="fix-icon">✓</div>
+              <div>
+                <strong>Smooth reconciliation</strong>
+                <span>Clients lerp to anchor state — no snapping, ever</span>
+              </div>
+            </li>
+            <li>
+              <div class="fix-icon">✓</div>
+              <div>
+                <strong>Zone transitions safe</strong>
+                <span>Anchor is zone-boundary authority — no duplicate states</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- DATA MODEL -->
+      <div class="anchor-data-section">
+        <div class="anchor-data-header">
+          <h3>What the Anchor Stores</h3>
+          <p>A minimal, flat, write-once-per-tick state record per entity. The server is the only writer.</p>
+        </div>
+        <div class="anchor-fields-grid">
+          <div class="anchor-field">
+            <div class="anchor-field-icon" style="--fa:#7c3aed">📍</div>
+            <div class="anchor-field-name">Position</div>
+            <div class="anchor-field-type">Vec3 · authoritative</div>
+          </div>
+          <div class="anchor-field">
+            <div class="anchor-field-icon" style="--fa:#2563eb">🏃</div>
+            <div class="anchor-field-name">Velocity</div>
+            <div class="anchor-field-type">Vec3 · authoritative</div>
+          </div>
+          <div class="anchor-field">
+            <div class="anchor-field-icon" style="--fa:#06b6d4">🔄</div>
+            <div class="anchor-field-name">Object State</div>
+            <div class="anchor-field-type">Enum · sealed</div>
+          </div>
+          <div class="anchor-field">
+            <div class="anchor-field-icon" style="--fa:#10b981">🤝</div>
+            <div class="anchor-field-name">Interactions</div>
+            <div class="anchor-field-type">Event log · immutable</div>
+          </div>
+          <div class="anchor-field">
+            <div class="anchor-field-icon" style="--fa:#f59e0b">🗺️</div>
+            <div class="anchor-field-name">Zone Membership</div>
+            <div class="anchor-field-type">ZoneID · authoritative</div>
+          </div>
+          <div class="anchor-field">
+            <div class="anchor-field-icon" style="--fa:#ec4899">👤</div>
+            <div class="anchor-field-name">Player Status</div>
+            <div class="anchor-field-type">Health, flags · sealed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLOW DIAGRAM -->
+      <div class="anchor-flow">
+        <div class="anchor-flow-title">Signal Flow</div>
+        <div class="anchor-flow-row" id="anchorFlowRow">
+          <div class="anchor-flow-node client" data-step="0">
+            <div class="afn-icon">👥</div>
+            <div class="afn-label">Clients</div>
+            <div class="afn-sub">Simulate &amp; compute</div>
+          </div>
+          <div class="anchor-flow-arrow" data-step="0">
+            <div class="afa-line"></div>
+            <div class="afa-label">proposals</div>
+          </div>
+          <div class="anchor-flow-node consensus" data-step="1">
+            <div class="afn-icon">⚖️</div>
+            <div class="afn-label">Consensus</div>
+            <div class="afn-sub">Majority vote</div>
+          </div>
+          <div class="anchor-flow-arrow" data-step="1">
+            <div class="afa-line"></div>
+            <div class="afa-label">winner</div>
+          </div>
+          <div class="anchor-flow-node server" data-step="2">
+            <div class="afn-icon">🖥️</div>
+            <div class="afn-label">Server</div>
+            <div class="afn-sub">Validates &amp; decides</div>
+          </div>
+          <div class="anchor-flow-arrow" data-step="2">
+            <div class="afa-line"></div>
+            <div class="afa-label">writes</div>
+          </div>
+          <div class="anchor-flow-node anchor-node" data-step="3">
+            <div class="afn-icon">⚓</div>
+            <div class="afn-label">State Anchor</div>
+            <div class="afn-sub">Single truth</div>
+          </div>
+          <div class="anchor-flow-arrow reverse" data-step="3">
+            <div class="afa-line"></div>
+            <div class="afa-label">lerp corrections</div>
+          </div>
+          <div class="anchor-flow-node client-out" data-step="4">
+            <div class="afn-icon">🎮</div>
+            <div class="afn-label">All Clients</div>
+            <div class="afn-sub">Smooth reconcile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SDK CODE -->
+      <div class="anchor-sdk">
+        <div class="anchor-sdk-header">
+          <h3>SDK Integration</h3>
+          <div class="anchor-sdk-tabs">
+            <button class="asa-tab active" data-asa="write">Write Anchor</button>
+            <button class="asa-tab" data-asa="read">Read &amp; Reconcile</button>
+            <button class="asa-tab" data-asa="validate">Validate Hook</button>
+          </div>
+        </div>
+        <div class="asa-panel active" data-asa-panel="write">
+          <div class="code-block">
+            <div class="code-toolbar"><span class="code-lang">TypeScript · Server-Side Only</span><button class="copy-btn" data-copy="asa-write">Copy</button></div>
+            <pre><code><span class="cm">// Only the server may call StateAnchor.write()</span>
+<span class="cm">// This is enforced at the transport layer — client calls are rejected</span>
+
+StateAnchor.<span class="fn">write</span>(entityID, {
+  position:    consensus.position,    <span class="cm">// Vec3 — from consensus winner</span>
+  velocity:    consensus.velocity,    <span class="cm">// Vec3 — from consensus winner</span>
+  objectState: consensus.state,       <span class="cm">// 'alive' | 'dead' | 'interacting'</span>
+  zoneMember:  consensus.zoneID,      <span class="cm">// authoritative zone assignment</span>
+  playerFlags: consensus.flags,       <span class="cm">// bitmask: grounded, sprinting…</span>
+  tick:        currentTick,           <span class="cm">// monotonic tick counter</span>
+});
+
+<span class="cm">// Anchor is immediately broadcast to all zone subscribers</span>
+StateAnchor.<span class="fn">broadcast</span>(entityID, { zone: consensus.zoneID });</code></pre>
+          </div>
+        </div>
+        <div class="asa-panel" data-asa-panel="read">
+          <div class="code-block">
+            <div class="code-toolbar"><span class="code-lang">TypeScript · Client-Side</span><button class="copy-btn" data-copy="asa-read">Copy</button></div>
+            <pre><code><span class="cm">// Clients receive anchor updates and lerp smoothly</span>
+StateAnchor.<span class="fn">OnAnchorUpdate</span>((entityID, anchor) => {
+  <span class="kw">const</span> entity = World.<span class="fn">getEntity</span>(entityID);
+
+  <span class="cm">// Smooth interpolation — never snap, always lerp</span>
+  entity.position.<span class="fn">lerpTo</span>(anchor.position, RECONCILE_SPEED);
+  entity.velocity.<span class="fn">set</span>(anchor.velocity);
+
+  <span class="cm">// Hard-correct state (zone, flags) — these are boolean, no lerp</span>
+  entity.zone   = anchor.zoneMember;
+  entity.flags  = anchor.playerFlags;
+  entity.state  = anchor.objectState;
+
+  <span class="cm">// Rewind local prediction to match anchor tick</span>
+  Prediction.<span class="fn">rewindTo</span>(anchor.tick);
+  Prediction.<span class="fn">replayInputsSince</span>(anchor.tick);
+});</code></pre>
+          </div>
+        </div>
+        <div class="asa-panel" data-asa-panel="validate">
+          <div class="code-block">
+            <div class="code-toolbar"><span class="code-lang">TypeScript · Server Hook</span><button class="copy-btn" data-copy="asa-validate">Copy</button></div>
+            <pre><code><span class="cm">// Server-side validation hook — runs before any Anchor write</span>
+StateAnchor.<span class="fn">OnBeforeWrite</span>((entityID, proposed, current) => {
+
+  <span class="cm">// Plausibility: max movement per tick (anti-teleport)</span>
+  <span class="kw">const</span> delta = proposed.position.<span class="fn">distanceTo</span>(current.position);
+  <span class="kw">if</span> (delta > MAX_MOVEMENT_PER_TICK) {
+    <span class="kw">return</span> { accept: <span class="kw">false</span>, reason: <span class="str">'position_teleport'</span> };
+  }
+
+  <span class="cm">// Zone boundary: only accept if correct zone transition</span>
+  <span class="kw">if</span> (proposed.zoneMember !== current.zoneMember) {
+    <span class="kw">if</span> (!ZoneGraph.<span class="fn">isAdjacent</span>(current.zoneMember, proposed.zoneMember)) {
+      <span class="kw">return</span> { accept: <span class="kw">false</span>, reason: <span class="str">'invalid_zone_jump'</span> };
+    }
+  }
+
+  <span class="kw">return</span> { accept: <span class="kw">true</span> };
+});</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       NETSYNC SHIELD — 20 ANTI-ROLLBACK MECHANISMS · 7 LAYERS
+  ═══════════════════════════════════════════════════════════ -->
+  <section id="netsync" class="section ns-section">
+    <div class="container">
+
+      <!-- HEADER -->
+      <div class="section-header">
+        <div class="tag ns-tag">NetSync Shield · Zero Rollback</div>
+        <h2>20 Mechanisms.<br /><span class="gradient-text-ns">Zero Glitches.</span></h2>
+        <p>A lückenlose defense system across 7 layers that eliminates rubberbanding, rollback, and position correction — making your multiplayer feel as smooth as a singleplayer game.</p>
+      </div>
+
+      <!-- LIVE SIMULATION CANVAS -->
+      <div class="ns-sim-wrap">
+        <canvas id="netsyncCanvas"></canvas>
+        <div class="ns-sim-overlay">
+          <div class="ns-sim-badge">
+            <span class="ns-pulse-dot"></span>
+            Live NetSync Simulation
+          </div>
+          <div class="ns-sim-stats" id="nsSimStats">
+            <div class="ns-ss"><span class="ns-ss-val" id="nsRollbacks">0</span><span class="ns-ss-label">Rollbacks</span></div>
+            <div class="ns-ss"><span class="ns-ss-val" id="nsCorrected">0</span><span class="ns-ss-label">Soft Corrections</span></div>
+            <div class="ns-ss"><span class="ns-ss-val" id="nsSmooth">100%</span><span class="ns-ss-label">Smooth Rate</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER NAVIGATION -->
+      <div class="ns-layer-nav" id="nsLayerNav">
+        <button class="ns-layer-btn active" data-ns-layer="1">
+          <span class="ns-lb-num">01</span>
+          <span class="ns-lb-name">Zeitkontrolle</span>
+        </button>
+        <button class="ns-layer-btn" data-ns-layer="2">
+          <span class="ns-lb-num">02</span>
+          <span class="ns-lb-name">Bewegung</span>
+        </button>
+        <button class="ns-layer-btn" data-ns-layer="3">
+          <span class="ns-lb-num">03</span>
+          <span class="ns-lb-name">Netzwerk</span>
+        </button>
+        <button class="ns-layer-btn" data-ns-layer="4">
+          <span class="ns-lb-num">04</span>
+          <span class="ns-lb-name">Zonen</span>
+        </button>
+        <button class="ns-layer-btn" data-ns-layer="5">
+          <span class="ns-lb-num">05</span>
+          <span class="ns-lb-name">State</span>
+        </button>
+        <button class="ns-layer-btn" data-ns-layer="6">
+          <span class="ns-lb-num">06</span>
+          <span class="ns-lb-name">Server</span>
+        </button>
+        <button class="ns-layer-btn" data-ns-layer="7">
+          <span class="ns-lb-num">07</span>
+          <span class="ns-lb-name">Visual</span>
+        </button>
+      </div>
+
+      <!-- LAYER PANELS — dynamically rendered, one visible at a time -->
+      <div class="ns-layers-container" id="nsLayersContainer">
+        <!-- All 7 layers are rendered by JS -->
+      </div>
+
+      <!-- RESULTS DASHBOARD -->
+      <div class="ns-results">
+        <div class="ns-results-header">
+          <h3>Combined Results</h3>
+          <p>When all 20 mechanisms work together</p>
+        </div>
+        <div class="ns-results-grid">
+          <div class="ns-result-card" style="--rc:#10b981">
+            <div class="ns-rc-value">0</div>
+            <div class="ns-rc-label">Hard Rollbacks</div>
+            <div class="ns-rc-bar"><div class="ns-rc-fill" style="--rp:100%"></div></div>
+          </div>
+          <div class="ns-result-card" style="--rc:#6366f1">
+            <div class="ns-rc-value">95–98%</div>
+            <div class="ns-rc-label">Less Visible Corrections</div>
+            <div class="ns-rc-bar"><div class="ns-rc-fill" style="--rp:97%"></div></div>
+          </div>
+          <div class="ns-result-card" style="--rc:#2563eb">
+            <div class="ns-rc-value">Perfect</div>
+            <div class="ns-rc-label">Movement Fidelity</div>
+            <div class="ns-rc-bar"><div class="ns-rc-fill" style="--rp:100%"></div></div>
+          </div>
+          <div class="ns-result-card" style="--rc:#f59e0b">
+            <div class="ns-rc-value">Stable</div>
+            <div class="ns-rc-label">Zone Transitions</div>
+            <div class="ns-rc-bar"><div class="ns-rc-fill" style="--rp:100%"></div></div>
+          </div>
+          <div class="ns-result-card" style="--rc:#ec4899">
+            <div class="ns-rc-value">Zero</div>
+            <div class="ns-rc-label">Desync Issues</div>
+            <div class="ns-rc-bar"><div class="ns-rc-fill" style="--rp:100%"></div></div>
+          </div>
+          <div class="ns-result-card" style="--rc:#06b6d4">
+            <div class="ns-rc-value">Zero</div>
+            <div class="ns-rc-label">Ghost Positions</div>
+            <div class="ns-rc-bar"><div class="ns-rc-fill" style="--rp:100%"></div></div>
+          </div>
+        </div>
+
+        <!-- AAA Comparison -->
+        <div class="ns-aaa-row">
+          <div class="ns-aaa-label">On par with</div>
+          <div class="ns-aaa-games">
+            <span class="ns-aaa-game" style="--ag:#fd4556">Valorant</span>
+            <span class="ns-aaa-game" style="--ag:#cd3333">Apex Legends</span>
+            <span class="ns-aaa-game" style="--ag:#2563eb">Fortnite</span>
+            <span class="ns-aaa-game" style="--ag:#a78bfa">Warframe</span>
+            <span class="ns-aaa-game" style="--ag:#06b6d4">Destiny 2</span>
+          </div>
+          <div class="ns-aaa-extra">+ Redundanz &amp; Konsens for even higher stability</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ DEVELOPER TOOLS ═══════════════ -->
+  <section id="tools" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">Developer Tools</div>
+        <h2>Start Building Today</h2>
+        <p>Everything you need to integrate UniPlay into your game. From CLI tools to SDK downloads.</p>
+      </div>
+
+      <div class="tools-grid">
+        <!-- CLI Tool -->
+        <div class="tool-card">
+          <div class="tool-card-header">
+            <div class="tool-icon">🖥️</div>
+            <div>
+              <div class="tool-name">UniPlay CLI</div>
+              <div class="tool-desc">Project scaffolding and plugin management</div>
+            </div>
+          </div>
+          <div class="tool-content">
+            <div class="code-block">
+              <div class="code-toolbar"><span class="code-lang">Terminal</span><button class="copy-btn" data-copy="cli-install">Copy</button></div>
+              <pre><code><span class="cm"># Install globally</span>
+npm install -g @uniplay/cli
+
+<span class="cm"># Create a new UniPlay project</span>
+uniplay create my-game --template sandbox
+
+<span class="cm"># Add modules to existing project</span>
+uniplay add physics combat
+
+<span class="cm"># Start development server</span>
+uniplay dev</code></pre>
+            </div>
+            <div class="tool-links">
+              <a href="https://github.com/uniplay/cli" class="tool-link" target="_blank">📦 NPM Package</a>
+              <a href="https://github.com/uniplay/cli#readme" class="tool-link" target="_blank">📖 Documentation</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SDK Download -->
+        <div class="tool-card">
+          <div class="tool-card-header">
+            <div class="tool-icon">📦</div>
+            <div>
+              <div class="tool-name">SDK Downloads</div>
+              <div class="tool-desc">Pre-built packages for your stack</div>
+            </div>
+          </div>
+          <div class="tool-content">
+            <div class="sdk-downloads">
+              <a href="#" class="sdk-download" data-sdk="npm">
+                <div class="sdk-icon">📦</div>
+                <div class="sdk-info">
+                  <div class="sdk-name">NPM Package</div>
+                  <div class="sdk-desc">@uniplay/core @uniplay/server</div>
+                </div>
+                <div class="sdk-arrow">→</div>
+              </a>
+              <a href="#" class="sdk-download" data-sdk="unity">
+                <div class="sdk-icon">🎮</div>
+                <div class="sdk-info">
+                  <div class="sdk-name">Unity Package</div>
+                  <div class="sdk-desc">.unitypackage (coming soon)</div>
+                </div>
+                <div class="sdk-arrow">→</div>
+              </a>
+              <a href="#" class="sdk-download" data-sdk="unreal">
+                <div class="sdk-icon">🎯</div>
+                <div class="sdk-info">
+                  <div class="sdk-name">Unreal Plugin</div>
+                  <div class="sdk-desc">.uplugin (coming soon)</div>
+                </div>
+                <div class="sdk-arrow">→</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="tool-card">
+          <div class="tool-card-header">
+            <div class="tool-icon">🚀</div>
+            <div>
+              <div class="tool-name">Quick Start</div>
+              <div class="tool-desc">5-minute setup guide</div>
+            </div>
+          </div>
+          <div class="tool-content">
+            <div class="quick-steps">
+              <div class="quick-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <div class="step-title">Install Dependencies</div>
+                  <code>npm install @uniplay/core @uniplay/server</code>
+                </div>
+              </div>
+              <div class="quick-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <div class="step-title">Initialize Engine</div>
+                  <code>const engine = new UniPlayEngine();</code>
+                </div>
+              </div>
+              <div class="quick-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <div class="step-title">Add Your First Module</div>
+                  <code>engine.addModule('physics');</code>
+                </div>
+              </div>
+              <div class="quick-step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <div class="step-title">Start Server</div>
+                  <code>engine.start({ port: 3000 });</code>
+                </div>
+              </div>
+            </div>
+            <div class="tool-links">
+              <a href="#api" class="tool-link">📚 Full API Reference</a>
+              <a href="https://github.com/uniplay/examples" class="tool-link" target="_blank">💡 Examples</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Demo -->
+        <div class="tool-card tool-card-wide">
+          <div class="tool-card-header">
+            <div class="tool-icon">🎮</div>
+            <div>
+              <div class="tool-name">Live Demo</div>
+              <div class="tool-desc">Try UniPlay in your browser</div>
+            </div>
+          </div>
+          <div class="tool-content">
+            <div class="demo-container">
+              <iframe id="demoFrame" src="demo.html" width="100%" height="400" frameborder="0"></iframe>
+            </div>
+            <div class="demo-controls">
+              <button class="demo-btn" id="demoReset">🔄 Reset</button>
+              <button class="demo-btn" id="demoPhysics">⚡ Toggle Physics</button>
+              <button class="demo-btn" id="demoConsensus">⚖️ Show Consensus</button>
+            </div>
+            <div class="tool-links">
+              <a href="demo.html" class="tool-link" target="_blank">🎮 Full Demo</a>
+              <a href="https://github.com/uniplay/demo" class="tool-link" target="_blank">📄 Source Code</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Community & Support -->
+      <div class="community-section">
+        <div class="community-header">
+          <h3>Join the Community</h3>
+          <p>Get help, share your projects, and contribute to UniPlay</p>
+        </div>
+        <div class="community-links">
+          <a href="https://discord.gg/uniplay" class="community-link" target="_blank">
+            <div class="community-icon">💬</div>
+            <div class="community-info">
+              <div class="community-name">Discord</div>
+              <div class="community-desc">Real-time chat & support</div>
+            </div>
+          </a>
+          <a href="https://github.com/uniplay" class="community-link" target="_blank">
+            <div class="community-icon">📚</div>
+            <div class="community-info">
+              <div class="community-name">GitHub</div>
+              <div class="community-desc">Issues, PRs, discussions</div>
+            </div>
+          </a>
+          <a href="https://twitter.com/uniplaydev" class="community-link" target="_blank">
+            <div class="community-icon">🐦</div>
+            <div class="community-info">
+              <div class="community-name">Twitter</div>
+              <div class="community-desc">Updates & announcements</div>
+            </div>
+          </a>
+          <a href="https://forum.uniplay.dev" class="community-link" target="_blank">
+            <div class="community-icon">📝</div>
+            <div class="community-info">
+              <div class="community-name">Forum</div>
+              <div class="community-desc">Tutorials & guides</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════ CTA ═══════════════ -->
+  <section id="sdk-start" class="section section-cta">
+    <div class="container">
+      <div class="cta-content">
+        <div class="tag">Ready to Build?</div>
+        <h2>Your Game. Your Rules.<br />Our Engine.</h2>
+        <p>Start with "The Cube – Save Us" as your Proof of Concept. It activates 5 of 6 modules simultaneously — the ultimate stress test for the framework.</p>
+        <div class="cta-modules">
+          <span>🧬 Social</span>
+          <span>🌍 World</span>
+          <span>⚡ Physics</span>
+          <span>🤖 AI/NPC</span>
+          <span>💰 Economy</span>
+        </div>
+        <div class="cta-buttons">
+          <a href="#architecture" class="btn-primary">Read the Blueprint</a>
+          <a href="#api" class="btn-ghost">Explore the API</a>
+        </div>
+      </div>
+      <div class="cta-visual">
+        <canvas id="cubeCanvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="nav-logo">
+            <div class="logo-icon">⬡</div>
+            <span>UniPlay<strong>Engine</strong></span>
+          </div>
+          <p>Universal Multiplayer OS.<br />Build once. Ship everywhere.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <div class="footer-col-title">Architecture</div>
+            <a href="#architecture">4-Layer Stack</a>
+            <a href="#modules">SIM Modules</a>
+            <a href="#scaling">Scaling</a>
+            <a href="#anchor">State Anchor</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">Developers</div>
+            <a href="#api">SDK API</a>
+            <a href="#genres">Genre Guide</a>
+            <a href="#netsync">NetSync Shield</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">Showcase</div>
+            <a href="#genres">The Cube</a>
+            <a href="#genres">Sandbox Mode</a>
+            <a href="#genres">Shooter Mode</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 UniPlay Engine · Universal Multiplayer Blueprint</span>
+        <span>Built for every genre</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
