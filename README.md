@@ -117,8 +117,9 @@ pnpm run dev
 
 ## 📄 License & Community
 
-UniPlay Engine is open source software MIT licensed.
+UniPlay Engine is open source software Apache-2.0 licensed.
 
 - **Discord:** Join our [Community Chat](https://discord.gg/uniplay)
 - **Twitter:** [@uniplaydev](https://twitter.com/uniplaydev)
 - **Architecture Documentation:** Read our comprehensive Web Blueprint [here](#).
+

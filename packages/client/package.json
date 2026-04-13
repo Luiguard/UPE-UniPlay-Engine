@@ -1,0 +1,22 @@
+{
+  "name": "@uniplay/client",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@uniplay/core": "workspace:*",
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.0.0",
+    "typescript": "^5.5.0"
+  },
+  "author": "Benjamin Leimer, Vienna",
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@uniplay/minecraft-adapter",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@uniplay/core": "workspace:*",
+    "@uniplay/server": "workspace:*",
+    "@uniplay/plugins": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}

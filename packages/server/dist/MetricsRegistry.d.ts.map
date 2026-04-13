@@ -1,0 +1,1 @@
+{"version":3,"file":"MetricsRegistry.d.ts","sourceRoot":"","sources":["../src/MetricsRegistry.ts"],"names":[],"mappings":"AAAA,qBAAa,eAAe;IAC1B,OAAO,CAAC,OAAO,CAAkC;IAG1C,oBAAoB,IAAI,MAAM;IAU9B,SAAS,CAAC,MAAM,EAAE,MAAM,EAAE,KAAK,GAAE,MAAU,GAAG,IAAI;IAKlD,KAAK,CAAC,MAAM,EAAE,MAAM,EAAE,KAAK,EAAE,MAAM,GAAG,IAAI;CAGlD"}

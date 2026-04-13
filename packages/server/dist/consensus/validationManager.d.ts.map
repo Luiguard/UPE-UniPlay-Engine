@@ -1,0 +1,1 @@
+{"version":3,"file":"validationManager.d.ts","sourceRoot":"","sources":["../../src/consensus/validationManager.ts"],"names":[],"mappings":"AAAA,OAAO,EAAe,gBAAgB,EAAE,WAAW,EAAE,MAAM,eAAe,CAAC;AAE3E,qBAAa,iBAAiB;IAC5B,mBAAmB,CAAC,KAAK,EAAE,WAAW,GAAG,gBAAgB;IAiBzD,uBAAuB,CAAC,MAAM,EAAE,GAAG,GAAG,gBAAgB;CAWvD"}

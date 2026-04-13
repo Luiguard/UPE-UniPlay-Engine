@@ -1,0 +1,43 @@
+import { TickController } from './TickController.js';
+import { StateAnchor } from './StateAnchor.js';
+import { WSTransportServer } from './transport/WebSocketServerTransport.js';
+import { ConsensusEngine } from './consensus/ConsensusEngine.js';
+import { TaskScheduler } from './consensus/TaskScheduler.js';
+import { ZoneManager } from './zones/ZoneManager.js';
+import { InterestManager } from './network/InterestManager.js';
+import { EdgeCoordinator } from './network/EdgeCoordinator.js';
+import { MetricsRegistry } from './MetricsRegistry.js';
+import { HostGateway } from './api/HostGateway.js';
+import { WebhookEmitter } from './api/WebhookEmitter.js';
+export * from './TickController.js';
+export * from './StateAnchor.js';
+export * from './transport/WebSocketServerTransport.js';
+export * from './consensus/ConsensusEngine.js';
+export * from './consensus/TaskScheduler.js';
+export * from './zones/ZoneManager.js';
+export * from './network/InterestManager.js';
+export * from './network/EdgeCoordinator.js';
+export * from './MetricsRegistry.js';
+export * from './RedisStateAnchor.js';
+export * from './api/HostGateway.js';
+export * from './api/WebhookEmitter.js';
+import { ServerConfig } from '@uniplay/core';
+export declare class UniPlayServer {
+    config: ServerConfig;
+    tickController: TickController;
+    transport: WSTransportServer;
+    stateAnchor: StateAnchor;
+    consensus: ConsensusEngine;
+    taskScheduler: TaskScheduler;
+    zoneManager: ZoneManager;
+    interestManager: InterestManager;
+    edgeCoordinator: EdgeCoordinator;
+    metrics: MetricsRegistry;
+    hostGateway: HostGateway;
+    webhook: WebhookEmitter;
+    constructor(config?: Partial<ServerConfig>, redisClient?: any, webhookUrl?: string);
+    private setupInternals;
+    start(): void;
+    stop(): void;
+}
+//# sourceMappingURL=index.d.ts.map

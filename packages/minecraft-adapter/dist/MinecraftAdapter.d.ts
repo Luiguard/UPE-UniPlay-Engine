@@ -1,0 +1,1 @@
+//# sourceMappingURL=MinecraftAdapter.d.ts.map
