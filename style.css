@@ -1007,6 +1007,329 @@ code { color: var(--text-1); }
   .footer-links { flex-wrap: wrap; gap: 32px; }
 }
 
+/* ═══════════════ DEVELOPER TOOLS SECTION ═══════════════ */
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.tool-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.tool-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.tool-card-wide {
+  grid-column: 1 / -1;
+}
+
+.tool-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.tool-icon {
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.tool-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.tool-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.tool-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Code Block */
+.code-block {
+  background: #0f111a;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  margin-bottom: auto;
+}
+
+.code-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.code-lang {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 1px;
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+.code-block .cm {
+  color: #64748b; /* Comment color */
+}
+
+/* Tool Links */
+.tool-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tool-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+
+.tool-link:hover {
+  color: #7dd3fc;
+}
+
+/* SDK Downloads */
+.sdk-downloads {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: auto;
+}
+
+.sdk-download {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.sdk-download:hover {
+  background: rgba(56, 189, 248, 0.05);
+  border-color: rgba(56, 189, 248, 0.2);
+  transform: translateX(4px);
+}
+
+.sdk-icon {
+  font-size: 1.5rem;
+  margin-right: 16px;
+}
+
+.sdk-info {
+  flex-grow: 1;
+}
+
+.sdk-name {
+  color: #f1f5f9;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.sdk-desc {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.sdk-arrow {
+  color: #64748b;
+  font-size: 1.2rem;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.sdk-download:hover .sdk-arrow {
+  transform: translateX(4px);
+  color: #38bdf8;
+}
+
+/* Quick Start Steps */
+.quick-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: auto;
+}
+
+.quick-step {
+  display: flex;
+  gap: 16px;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.step-content {
+  flex-grow: 1;
+}
+
+.step-title {
+  color: #f1f5f9;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.step-content code {
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Demo Container */
+.demo-container {
+  background: #0f111a;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 24px;
+}
+
+/* Community Section */
+.community-section {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.community-header {
+  margin-bottom: 32px;
+}
+
+.community-header h3 {
+  color: #f1f5f9;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.community-header p {
+  color: #94a3b8;
+}
+
+.community-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.community-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  text-decoration: none;
+  min-width: 200px;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.community-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.community-icon {
+  font-size: 1.5rem;
+}
+
+.community-name {
+  color: #f1f5f9;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.community-desc {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
 @media (max-width: 640px) {
   .hero-stats { flex-direction: column; gap: 16px; padding: 20px; }
   .stat-divider { width: 40px; height: 1px; }
