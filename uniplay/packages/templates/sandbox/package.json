@@ -1,0 +1,14 @@
+{
+  "name": "my-uniplay-game",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "uniplay dev",
+    "build": "uniplay build",
+    "start": "uniplay start"
+  },
+  "dependencies": {
+    "@uniplay/core": "^0.1.0",
+    "@uniplay/client": "^0.1.0",
+    "@uniplay/server": "^0.1.0"
+  }
+}

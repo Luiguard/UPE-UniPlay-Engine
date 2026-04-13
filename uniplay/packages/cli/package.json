@@ -1,0 +1,23 @@
+{
+  "name": "@uniplay/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "uniplay": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "fs-extra": "^11.0.0",
+    "@uniplay/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}
